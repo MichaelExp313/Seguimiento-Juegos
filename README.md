@@ -16,7 +16,7 @@ Funciona entera en el navegador: **sin servidor, sin cuentas y sin instalar nada
 - **Deshacer** al borrar (sin ventanas de confirmación molestas).
 - **Visor de fotos** a pantalla completa.
 - **Copias de seguridad**: exporta e importa todo (fotos incluidas) en un archivo `.json`.
-- **Tema claro / oscuro / automático**.
+- **Tema claro u oscuro** con un botón (la primera vez sigue el tema del sistema).
 - **Instalable como app** (PWA) en el móvil o el ordenador, y funciona **sin conexión**.
 - Guarda en **IndexedDB**, con mucho más espacio para fotos que la versión anterior. Si venías de la versión antigua, tus datos se migran solos.
 

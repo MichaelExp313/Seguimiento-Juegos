@@ -8,7 +8,6 @@ const DB_NAME = "pendientes-juegos", STORE = "kv";
 const STATUS = { jugando: "🎮 Jugando", pendiente: "⏳ Por empezar", pausado: "⏸️ En pausa", completado: "🏆 Completado" };
 const PRIO = { alta: "Alta", normal: "Normal", baja: "Baja" };
 const PRIO_ORDER = { alta: 0, normal: 1, baja: 2 };
-const THEMES = { auto: ["🌓", "Tema: automático"], light: ["☀️", "Tema: claro"], dark: ["🌙", "Tema: oscuro"] };
 
 /* ===== Estado ===== */
 let data = [];
@@ -524,13 +523,21 @@ function applyImport(mode) {
 }
 
 /* ===== Tema ===== */
+const darkMQ = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+function currentTheme() {
+  if (prefs.theme === "light" || prefs.theme === "dark") return prefs.theme;
+  return darkMQ && darkMQ.matches ? "dark" : "light"; // sin elección: sigue al sistema
+}
 function applyTheme() {
-  const r = document.documentElement;
-  if (prefs.theme === "auto") delete r.dataset.theme; else r.dataset.theme = prefs.theme;
-  const [icon, label] = THEMES[prefs.theme] || THEMES.auto;
-  $("#themeBtn").textContent = icon;
-  $("#themeBtn").title = label;
-  $("#themeBtn").setAttribute("aria-label", label + " (pulsa para cambiar)");
+  const t = currentTheme();
+  document.documentElement.dataset.theme = t;
+  const btn = $("#themeBtn");
+  btn.textContent = t === "dark" ? "☀️ Claro" : "🌙 Oscuro";
+  btn.title = t === "dark" ? "Cambiar a tema claro" : "Cambiar a tema oscuro";
+  btn.setAttribute("aria-label", btn.title);
+  btn.setAttribute("aria-pressed", String(t === "dark"));
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.content = t === "dark" ? "#14172a" : "#4b4fe0";
 }
 
 /* ===== Arranque ===== */
@@ -544,10 +551,10 @@ function wire() {
   $("#hideDone").addEventListener("change", e => { prefs.hideDone = e.target.checked; savePrefs(); render(); });
 
   $("#themeBtn").addEventListener("click", () => {
-    const order = ["auto", "light", "dark"];
-    prefs.theme = order[(order.indexOf(prefs.theme) + 1) % order.length];
+    prefs.theme = currentTheme() === "dark" ? "light" : "dark";
     savePrefs(); applyTheme();
   });
+  if (darkMQ && darkMQ.addEventListener) darkMQ.addEventListener("change", () => { if (prefs.theme === "auto") applyTheme(); });
 
   const menu = $("#menu"), menuBtn = $("#menuBtn");
   const setMenu = open => { menu.hidden = !open; menuBtn.setAttribute("aria-expanded", String(open)); };
