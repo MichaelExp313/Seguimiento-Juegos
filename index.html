@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mis pendientes de juegos</title>
+<meta name="description" content="Apunta lo que te falta por hacer en cada videojuego, con fotos, notas y prioridades.">
+<meta name="theme-color" content="#4b4fe0">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main>
+  <header class="top">
+    <div>
+      <h1>Mis pendientes de juegos</h1>
+      <p class="sub">Apunta lo que te falta por hacer en cada juego, con fotos y notas.</p>
+    </div>
+    <div class="topacts">
+      <button class="iconbtn" id="themeBtn" title="Cambiar tema" aria-label="Cambiar tema">🌓</button>
+      <button class="iconbtn" id="menuBtn" title="Copia de seguridad" aria-label="Copia de seguridad" aria-haspopup="true" aria-expanded="false">⋯</button>
+      <div class="menu" id="menu" role="menu" hidden>
+        <button role="menuitem" id="exportBtn">⬇️ Exportar copia (.json)</button>
+        <button role="menuitem" id="importBtn">⬆️ Importar copia</button>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+    </div>
+  </header>
+
+  <section class="stats" id="stats" aria-live="polite"></section>
+
+  <div class="warn" id="warn" role="alert"></div>
+
+  <form class="addgame" id="addGameForm" autocomplete="off">
+    <input type="text" id="gameName" placeholder="Título del juego" maxlength="80" aria-label="Título del juego" required>
+    <input type="text" id="gamePlatform" placeholder="Plataforma" maxlength="30" aria-label="Plataforma" list="platforms">
+    <datalist id="platforms">
+      <option value="PC"><option value="PS5"><option value="PS4"><option value="Switch"><option value="Switch 2">
+      <option value="Xbox Series"><option value="Xbox One"><option value="Steam Deck"><option value="Móvil"><option value="Retro">
+    </datalist>
+    <button class="primary" type="submit">Añadir juego</button>
+  </form>
+
+  <div class="toolbar">
+    <input type="search" id="search" placeholder="🔍 Buscar juego o pendiente…" aria-label="Buscar">
+    <div class="toolrow">
+      <select id="statusFilter" aria-label="Filtrar por estado">
+        <option value="">Todos los estados</option>
+        <option value="jugando">🎮 Jugando</option>
+        <option value="pendiente">⏳ Por empezar</option>
+        <option value="pausado">⏸️ En pausa</option>
+        <option value="completado">🏆 Completado</option>
+      </select>
+      <select id="sort" aria-label="Ordenar">
+        <option value="recent">Actividad reciente</option>
+        <option value="name">Nombre (A-Z)</option>
+        <option value="pending">Más pendientes</option>
+        <option value="progress">Más avanzados</option>
+      </select>
+      <label class="toggle"><input type="checkbox" id="hideDone"> Ocultar hechos</label>
+    </div>
+  </div>
+
+  <div id="games"></div>
+</main>
+
+<dialog id="lightbox" aria-label="Foto ampliada">
+  <img id="lightboxImg" alt="">
+  <p id="lightboxCap"></p>
+  <button class="iconbtn close" id="lightboxClose" aria-label="Cerrar">✕</button>
+</dialog>
+
+<dialog id="importDialog">
+  <h2>Importar copia</h2>
+  <p id="importInfo"></p>
+  <div class="dlgacts">
+    <button class="ghost" value="cancel" id="impCancel">Cancelar</button>
+    <button class="ghost" id="impMerge">Añadir a lo actual</button>
+    <button class="primary danger" id="impReplace">Reemplazar todo</button>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"><span id="toastMsg"></span><button id="toastUndo">Deshacer</button></div>
+
+<script src="app.js"></script>
+</body>
+</html>
