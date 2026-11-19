@@ -1,6 +1,6 @@
 // Service worker: permite usar la app sin conexión una vez cargada.
 // Sube el número de versión cuando cambies algún archivo para forzar la actualización.
-const CACHE = "pendientes-juegos-v3";
+const CACHE = "pendientes-juegos-v4";
 const ASSETS = ["./", "index.html", "styles.css", "app.js", "manifest.webmanifest",
   "icons/icon.svg", "icons/icon-192.png", "icons/icon-512.png"];
 

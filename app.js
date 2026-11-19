@@ -375,7 +375,10 @@ function newItemForm(g, details) {
 
 function itemEl(g, it) {
   const content = h("div", { class: "content" });
-  if (it.img) content.append(h("img", { src: it.img, alt: it.caption || "Foto del pendiente", loading: "lazy", onclick: () => openLightbox(it) }));
+  if (it.img) content.append(h("div", { class: "imgwrap" },
+    h("img", { src: it.img, alt: it.caption || "Foto del pendiente", loading: "lazy", onclick: () => openLightbox(g, it) }),
+    h("button", { class: "sharebtn", type: "button", title: "Compartir foto", "aria-label": "Compartir foto",
+      onclick: e => { e.stopPropagation(); shareImage(g, it); } }, shareIcon())));
   if (it.text) content.append(h("p", { class: "txt" }, hl(it.text)));
   if (it.caption) content.append(h("p", { class: "cap" }, hl(it.caption)));
   content.append(h("div", { class: "imeta" },
@@ -471,11 +474,65 @@ function addGame(e) {
 }
 
 /* ===== Visor de fotos ===== */
-function openLightbox(it) {
+let lightboxItem = null;
+function openLightbox(g, it) {
+  lightboxItem = { g, it };
   $("#lightboxImg").src = it.img;
   $("#lightboxImg").alt = it.caption || "Foto del pendiente";
   $("#lightboxCap").textContent = it.caption || it.text || "";
   $("#lightbox").showModal();
+}
+
+/* ===== Compartir fotos ===== */
+function shareIcon() {
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("viewBox", "0 0 24 24"); svg.setAttribute("aria-hidden", "true");
+  svg.innerHTML = '<path d="M12 3v12M7 8l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 13v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>';
+  return svg;
+}
+async function dataUrlToBlob(url) { return (await fetch(url)).blob(); }
+function toPng(blob) {
+  return new Promise((res, rej) => {
+    const img = new Image(), u = URL.createObjectURL(blob);
+    img.onload = () => {
+      const c = document.createElement("canvas");
+      c.width = img.naturalWidth; c.height = img.naturalHeight;
+      c.getContext("2d").drawImage(img, 0, 0);
+      URL.revokeObjectURL(u);
+      c.toBlob(b => b ? res(b) : rej(new Error("png")), "image/png");
+    };
+    img.onerror = () => { URL.revokeObjectURL(u); rej(new Error("img")); };
+    img.src = u;
+  });
+}
+function safeName(s) { return norm(s).replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) || "foto"; }
+
+async function shareImage(g, it) {
+  if (!it.img) return;
+  const text = [g.title, it.text, it.caption].filter(Boolean).join("\n");
+  const name = `${safeName(g.title)}-${safeName(it.text || it.caption)}.jpg`;
+  let blob;
+  try { blob = await dataUrlToBlob(it.img); } catch { return toast("No se pudo preparar la foto."); }
+  const file = new File([blob], name, { type: blob.type || "image/jpeg" });
+
+  // 1) Menú de compartir del sistema (móvil y algunos navegadores de escritorio)
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file], title: g.title, text }); return; }
+    catch (e) { if (e && e.name === "AbortError") return; }
+  }
+  // 2) Copiar la imagen al portapapeles
+  if (navigator.clipboard && window.ClipboardItem) {
+    try {
+      await navigator.clipboard.write([new ClipboardItem({ "image/png": toPng(blob) })]);
+      return toast("Foto copiada. Pégala donde quieras con Ctrl+V.");
+    } catch {}
+  }
+  // 3) Último recurso: descargarla
+  const a = h("a", { href: URL.createObjectURL(blob), download: name });
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  toast("Foto descargada para que puedas compartirla.");
 }
 
 /* ===== Copias de seguridad ===== */
@@ -570,6 +627,7 @@ function wire() {
 
   const lb = $("#lightbox");
   lb.addEventListener("click", () => lb.close());
+  $("#lightboxShare").addEventListener("click", e => { e.stopPropagation(); if (lightboxItem) shareImage(lightboxItem.g, lightboxItem.it); });
 
   $("#toastUndo").addEventListener("click", () => { const f = undoFn; hideToast(); if (f) f(); });
 

@@ -129,7 +129,11 @@ details[open] .chev{transform:rotate(90deg)}
 .item.done .txt{text-decoration:line-through;opacity:.65}
 .content{flex:1;min-width:0}
 .txt{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
-.item img{width:100%;max-height:340px;object-fit:contain;background:var(--bg);border-radius:8px;margin-bottom:8px;display:block;cursor:zoom-in}
+.imgwrap{position:relative;margin-bottom:8px}
+.item img{width:100%;max-height:340px;object-fit:contain;background:var(--bg);border-radius:8px;display:block;cursor:zoom-in}
+.sharebtn{position:absolute;top:8px;right:8px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgba(20,23,42,.62);color:#fff;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);box-shadow:0 2px 8px rgba(0,0,0,.25);transition:background .15s,transform .15s}
+.sharebtn:hover{background:var(--acc);transform:scale(1.06)}
+.sharebtn svg,.lbshare svg{width:18px;height:18px}
 .cap{margin:6px 0 0;padding:8px 10px;border-left:4px solid var(--acc);background:var(--bg);border-radius:0 8px 8px 0;font-size:.92rem;white-space:pre-wrap;overflow-wrap:anywhere}
 .imeta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:8px;font-size:.78rem;color:var(--mute)}
 .prio{font-weight:700;padding:1px 7px;border-radius:99px}
@@ -160,6 +164,7 @@ dialog h2{margin:0 0 8px;font-size:1.3rem}
 #lightbox{padding:0;max-width:96vw;max-height:94vh;background:transparent;box-shadow:none;overflow:visible}
 #lightbox img{display:block;max-width:96vw;max-height:84vh;object-fit:contain;border-radius:12px;margin:0 auto}
 #lightbox p{color:#fff;text-align:center;margin:10px auto 0;max-width:640px;white-space:pre-wrap}
+#lightbox .lbshare{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:60px;background:rgba(0,0,0,.6);color:#fff;border-color:transparent}
 #lightbox .close{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:12px;background:rgba(0,0,0,.6);color:#fff;border-color:transparent}
 
 /* Aviso deshacer */

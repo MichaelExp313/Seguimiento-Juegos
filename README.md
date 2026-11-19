@@ -15,6 +15,7 @@ Funciona entera en el navegador: **sin servidor, sin cuentas y sin instalar nada
 - **Filtros y orden**: por estado, por nombre, por actividad, por progreso; opción de ocultar lo ya hecho.
 - **Deshacer** al borrar (sin ventanas de confirmación molestas).
 - **Visor de fotos** a pantalla completa.
+- **Compartir fotos** con el botón de la esquina de cada imagen: abre el menú de compartir del móvil (WhatsApp, Telegram…) o, en el ordenador, copia la foto al portapapeles.
 - **Copias de seguridad**: exporta e importa todo (fotos incluidas) en un archivo `.json`.
 - **Tema claro u oscuro** con un botón (la primera vez sigue el tema del sistema).
 - **Instalable como app** (PWA) en el móvil o el ordenador, y funciona **sin conexión**.
